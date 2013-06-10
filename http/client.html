@@ -1,98 +1,372 @@
-<!DOCTYPE HTML>
-<html>
-	<head>
-		<title>SCRAM CTF Tester</title>
-		<script>
-			dojoConfig = {
-			"isDebug": true,
-			"debugAtAllCosts": true,
-			"parseOnLoad": true,
-			"baseUrl": "./js/dojo/dojo"
-			}
-		</script>
-		<script type="text/javascript" src="http://127.0.0.1/js/dojo/dojo/dojo.js"></script>
-		<script type="text/javascript" charset="utf-8">
-			require(["dojox/socket", "dojo/domReady!"], function(Socket) {
-				var echoSocket = new Socket("ws://127.0.0.1:10002/api");
-				var pingSocket = new Socket("ws://127.0.0.1:10001/api");
-				echoSocket.on("message", function(event) {
-					var data = event.data;
-					console.log("Echo Data", data);
-				});
-				echoSocket.on("open", function(event) {
-					echoSocket.send("hi server");
-				});
-				pingSocket.on("message", function(event) {
-					var data = event.data;
-					console.log("Ping Data", data);
-				});
-				pingSocket.on("open", function(event) {
-					pingSocket.send("ping");
-				});
-				var myButtonClick = function(){
-					//make some payload
-					var myJSON = {'foo':2,'bar':3}
-					//call my socket send func w/ payload
-					echoSocket.send(myJSON);
+<html id='html'>
+<a href="index.html">Home</a>
+<head>
+	<meta charset='utf-8'>
+	<title>Client Game</title>
+	<link rel="stylesheet" href="../../../resources/style/demo.css">
+	<script>
+		var dojoConfig = {
+			async: true,
+			packages: [{
+				name: "demo",
+				location: location.pathname.replace(/\/[^/]*$/, '')
+			}]
+		};
+	</script>
+</head>
+<body id="body">
+	<script src="//ajax.googleapis.com/ajax/libs/dojo/1.9.0/dojo/dojo.js"data-dojo-config="async: true"></script>
+<script>
 
+	//construct elements
+	require(["dojo/dom-construct", "dojo/_base/array"], function(domConstruct, arrayUtil){
+		var div1 = domConstruct.create("div", {id: "main"}, "body");//create main div that will hold the scramBackground image
+		
+		//rods
+		var rods = domConstruct.create("img", {id: 'rods', src: 'Rods.png'}, "main"); //create the rods image
+		var rodDownButton = domConstruct.create("div", {id: 'rodDownButton'}, "main"); //create the rod down button div
+		var rodUpButton = domConstruct.create("div", {id: 'rodUpButton'}, "main"); //create the rod up button div
+		
+		//gague bottom left
+		var gagueBottomLeftDownButton = domConstruct.create("div", {id: 'gagueBottomLeftDownButton'}, "main");//create the gague bottom left Down button div
+		var gagueBottomLeftUpButton = domConstruct.create("div", {id: 'gagueBottomLeftUpButton'}, "main");//create the gague bottom left up button div
+		var gague_bottom_left_div = domConstruct.create("div", {id: 'gague_bottom_left_div'}, "main");
+		var gague_bottom_left = domConstruct.create("img", {id: 'gague_bottom_left', src: '1.png', width: "17px", height: '35px'}, "gague_bottom_left_div");
+		
+		//gague middle bottom
+		var gague_middle_bottom = domConstruct.create("div", {id: 'gague_middle_bottom'}, "main");
+		
+		//gague top left
+		var gague_top_left = domConstruct.create("div", {id: 'gague_top_left'}, "main");
+		
+		//gague middle top
+		var gague_middle_top = domConstruct.create("div", {id: 'gague_middle_top'}, "main");
+		
+		//gague top right
+		var gague_top_right = domConstruct.create("div", {id: 'gague_top_right'}, "main");
+		
+	  
+	});
+
+	
+	//set styles
+	var gague1level = 2
+
+	
+	require(['dojo/dom-style'], function(domStyle){
+		//main container tags
+		domStyle.set("html", "position", "fixed"); //set html tag to a fixed position
+		domStyle.set("main", "backgroundImage", "url(scram.png)"); //set the background image of the main tag to the scram game background
+		domStyle.set("main", "width", "1000px");
+		domStyle.set("main", "height", "601px");
+		domStyle.set("main", "backgroundRepeat", "no-repeat");
+		
+		//rods
+		domStyle.set("rodDownButton", "position", "fixed"); //set rodDownButton div tag to a static placement
+		domStyle.set("rodDownButton", "top", "800");
+		domStyle.set("rods", "width", "70px");
+		domStyle.set("rods", "position", "fixed");
+		domStyle.set("rods", "left", "92");
+		domStyle.set("rods", "top", "120");
+		
+		
+		//bottom left gague
+		domStyle.set("gague_bottom_left_div", "position", "fixed");
+		domStyle.set("gague_bottom_left_div", "top", "472");
+		domStyle.set("gague_bottom_left_div", "left", "236");
+		domStyle.set("gague_bottom_left_div", "width", "30px");
+		domStyle.set("gague_bottom_left_div", "height", "40px");
+		
+		
+		//middle bottom gague
+		domStyle.set("gague_middle_bottom", "backgroundColor", "yellow");
+		domStyle.set("gague_middle_bottom", "position", "fixed");
+		domStyle.set("gague_middle_bottom", "top", "472");
+		domStyle.set("gague_middle_bottom", "left", "622");
+		domStyle.set("gague_middle_bottom", "width", "30px");
+		domStyle.set("gague_middle_bottom", "height", "40px");
+		
+		//top left gague
+		domStyle.set("gague_top_left", "backgroundColor", "yellow");
+		domStyle.set("gague_top_left", "position", "fixed");
+		domStyle.set("gague_top_left", "top", "360");
+		domStyle.set("gague_top_left", "left", "315");
+		domStyle.set("gague_top_left", "width", "30px");
+		domStyle.set("gague_top_left", "height", "40px");
+		
+		//middle top gague
+		domStyle.set("gague_middle_top", "backgroundColor", "yellow");
+		domStyle.set("gague_middle_top", "position", "fixed");
+		domStyle.set("gague_middle_top", "top", "360");
+		domStyle.set("gague_middle_top", "left", "628");
+		domStyle.set("gague_middle_top", "width", "30px");
+		domStyle.set("gague_middle_top", "height", "40px");
+		
+		//top right gague
+		domStyle.set("gague_top_right", "backgroundColor", "yellow");
+		domStyle.set("gague_top_right", "position", "fixed");
+		domStyle.set("gague_top_right", "top", "360");
+		domStyle.set("gague_top_right", "left", "709");
+		domStyle.set("gague_top_right", "width", "30px");
+		domStyle.set("gague_top_right", "height", "40px");
+		
+	});
+	
+	
+	//Buttons: Rods: Up/Down
+	var rodlevel = 0; //sets the initial rod level to zero
+	
+	//Button : Rod : Down
+	require(["dijit/form/Button", "dojo/dom", "dojo/fx", "dojo/domReady!"], function(Button, dom, fx){
+		var rodDownButton = new Button({
+			title: "Rod: Down",
+			onClick: function(){ //checks the rod level and slides it down to the appropriate place
+				if (rodlevel == 0){
+					var rodshift = dom.byId("rods");
+					fx.slideTo({
+						top: 126,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 1
 				}
-				
-				 //Edited by Joe Pecsi...not sure if the below is correct or not
-		                pollSocket.on("message", function(event) {
-		                    var data = event.data;
-		                    console.log("Poll Data", data);
-		                });
-		                pollSocket.on("open", function(event) {
-		                    echoSocket.send("Hey guys...polling");
-		                });
-		                signupSocket.on("message", function(event) {
-		                    var data = event.data;
-		                    console.log("Signup Data", data);
-		                });
-		                signupSocket.on("open", function(event) {
-		                    pingSocket.send("signup");
-		                });
-		                loginSocket.on("message", function(event) {
-		                    var data = event.data;
-		                    console.log("User Data", data);
-		                });
-		                loginSocket.on("open", function(event) {
-		                    echoSocket.send("hi user");
-		                });
-		                rodSocket.on("message", function(event) {
-		                    var data = event.data;
-		                    console.log("Rod State", data);
-		                });
-		                rodSocket.on("open", function(event) {
-		                    pingSocket.send("rod change");
-		                });
-		                valveSocket.on("message", function(event) {
-		                    var data = event.data;
-		                    console.log("Valve State", data);
-		                });
-		                valveSocket.on("open", function(event) {
-		                    pingSocket.send("valve change");
-		                });
-		                gaugeSocket.on("message", function(event) {
-		                    var data = event.data;
-		                    console.log("Gauge State", data);
-		                });
-		                gaugeSocket.on("open", function(event) {
-		                    echoSocket.send("gauge change");
-		                });
-			});
+				else if (rodlevel == 1){
+					var rodshift = dom.byId("rods");
+					fx.slideTo({
+						top: 132,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 2
+				}
+				else if (rodlevel == 2){
+					var rodshift = dom.byId("rods");
+					fx.slideTo({
+						top: 138,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 3
+				}
+				else if (rodlevel == 3){
+					var rodshift = dom.byId("rods");
+					fx.slideTo({
+						top: 144,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 4
+				}
+				else if (rodlevel == 4){
+					var rodshift = dom.byId("rods");
+					fx.slideTo({
+						top: 150,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 5
+				}
+				else if (rodlevel == 5){
+					var rodshift = dom.byId("rods");
+					fx.slideTo({
+						top: 156,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 6
+				}
+				else if (rodlevel == 6){
+					var rodshift = dom.byId("rods");
+					fx.slideTo({
+						top: 162,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 7
+				}
+				else if (rodlevel == 7){
+					var rodshift = dom.byId("rods");
+					fx.slideTo({
+						top: 168,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 8
+				}
+				else if (rodlevel == 8){
+					var rodshift = dom.byId("rods");
+					fx.slideTo({
+						top: 175,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 9
+				}
+			}
+		}, "rodDownButton");
+	}),
+		
+	//Button : Rod : Up
+	require(["dijit/form/Button", "dojo/dom", "dojo/fx", "dojo/domReady!"],
+	function(Button, dom, fx){
+		var rodUpButton = new Button({
+			label: "Rod: Up",
+			onClick: function(){ //checks the rod level and slides it up to the appropriate place
+				var rodshift = dom.byId("rods");
+				if (rodlevel == 9){
+					fx.slideTo({
+						top: 168,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 8
+				}
+				else if (rodlevel == 8){
+					fx.slideTo({
+						top: 162,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 7
+				}
+				else if (rodlevel == 7){
+					fx.slideTo({
+						top: 156,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 6
+				}
+				else if (rodlevel == 6){
+					fx.slideTo({
+						top: 150,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 5
+				}
+				else if (rodlevel == 5){
+					fx.slideTo({
+						top: 144,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 4
+				}
+				else if (rodlevel == 4){
+					fx.slideTo({
+						top: 138,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 3
+				}
+				else if (rodlevel == 3){
+					fx.slideTo({
+						top: 132,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 2
+				}
+				else if (rodlevel == 2){
+					fx.slideTo({
+						top: 126,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 1
+				}
+				else if (rodlevel == 1){
+					fx.slideTo({
+						top: 120,
+						left: 92,
+						node: rods
+					}).play();
+					rodlevel = 0
+				}
+			}
+		}, "rodUpButton");
+	});
+	
+	//Button : Gague Bottom Left : Down
+	require(['dojo/dom-attr', "dijit/form/Button", "dojo/dom", "dojo/fx", "dojo/domReady!"], function(domAttr, Button, dom, fx){
+		var gagueBottomLeftDownButton = new Button({
+			label: "Gauge Bottom Left: Down",
+			onClick: function(){ //sets current img source to a variable. checks variable against a set value. Changes picture accordingly
+				var currentImg = domAttr.get('gague_bottom_left', 'src');
+				if (currentImg == '4.png'){
+					domAttr.set('gague_bottom_left', "src", "3.png");
+					domAttr.set('gague_bottom_left', "width", "25px");
+					domAttr.set('gague_bottom_left', 'height', '35px');
+				}
+				else if (currentImg == '3.png'){
+					domAttr.set('gague_bottom_left', "src", "2.png");
+					domAttr.set('gague_bottom_left', "width", "20px");
+					domAttr.set('gague_bottom_left', 'height', '35px');
+				}
+				else if (currentImg == '2.png'){
+					domAttr.set('gague_bottom_left', "src", "1.png")
+					domAttr.set('gague_bottom_left', "width", "17px");
+					domAttr.set('gague_bottom_left', 'height', '35px');
+				}
+			}
+		}, "gagueBottomLeftDownButton");
+	});
+	//Button : Gague Bottom Left : Up
+	require(['dojo/dom-attr', "dijit/form/Button", "dojo/dom", "dojo/fx", "dojo/domReady!"], function(domAttr, Button, dom, fx){
+		var gagueBottomLeftUpButton = new Button({
+			label: "Gauge Bottom Left: up",
+			onClick: function(){ //sets current img source to a variable. checks variable against a set value. Changes picture accordingly
+				var currentImg = domAttr.get('gague_bottom_left', 'src');
+				if (currentImg == '1.png'){
+					domAttr.set('gague_bottom_left', "src", "2.png");
+					domAttr.set('gague_bottom_left', "width", "20px");
+					domAttr.set('gague_bottom_left', 'height', '35px');
+				}
+				else if (currentImg == '2.png'){
+					domAttr.set('gague_bottom_left', "src", "3.png");
+					domAttr.set('gague_bottom_left', "width", "25px");
+					domAttr.set('gague_bottom_left', 'height', '35px');
+				}
+				else if (currentImg == '3.png'){
+					domAttr.set('gague_bottom_left', "src", "4.png");
+					domAttr.set('gague_bottom_left', "width", "25px");
+					domAttr.set('gague_bottom_left', 'height', '35px');
+				}
+			}
+		}, "gagueBottomLeftUpButton");
+	});
+	
 
-		</script>
-	</head>
-	<body>
-		<h1>Send:</h1>
-		<form method='POST' action='#'>
-			<textarea name='data' id="data"></textarea>
-			<div>
-				<input type='submit'>
-			</div>
-		</form>
-		<h1>Receive:</h1>
-		<div id="log"></div>
-	</body>
+	
+
+</script>
+	
+	
+	
+
+</body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
